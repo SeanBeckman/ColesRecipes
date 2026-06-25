@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface RecipeRepository {
+    suspend fun getRecipe(title: String): Recipe?
     suspend fun getRecipes(): List<Recipe>
     suspend fun getRecipesWithinTime(maxTotalTime: Int): List<Recipe>
 
@@ -17,6 +18,10 @@ interface RecipeRepository {
 class RecipeRepositoryImpl @Inject constructor(
     private val recipeDao: RecipeDao
 ): RecipeRepository {
+
+    override suspend fun getRecipe(title: String): Recipe? {
+        return recipeDao.getRecipe(title)?.toDomain()
+    }
     override suspend fun getRecipes(): List<Recipe> = withContext(Dispatchers.IO) {
         val cached = recipeDao.getAllRecipes()
         if (cached.isEmpty()) {

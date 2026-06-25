@@ -10,6 +10,9 @@ interface RecipeDao {
     @Query("SELECT * FROM recipes")
     suspend fun getAllRecipes(): List<RecipeEntity>
 
+    @Query("SELECT * FROM recipes WHERE dynamicTitle = :title")
+    suspend fun getRecipe(title: String): RecipeEntity?
+
     @Query("SELECT * FROM recipes WHERE (cookTimeAsMinutes + prepTimeAsMinutes) <= :maxTime")
     suspend fun getRecipesWithinTime(maxTime: Int): List<RecipeEntity>
 

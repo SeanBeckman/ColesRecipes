@@ -4,14 +4,14 @@ import com.example.colesrecipes.repository.Recipe
 import com.example.colesrecipes.repository.RecipeRepository
 import javax.inject.Inject
 
-class RecipeUseCase @Inject constructor(
+class RecipesUseCase @Inject constructor(
     private val repository: RecipeRepository
 ) {
 
-    suspend fun getRecipe(title: String): Recipe? {
-        val recipe = repository.getRecipe(title)
-        return recipe?.let { prependBaseUrlToImageUrl(it) }
-    }
+    suspend fun getRecipes(): List<Recipe> = repository.getRecipes().map { prependBaseUrlToImageUrl(it) }
+
+    suspend fun getRecipesWithinTime(maxTotalTime: Int) =
+        repository.getRecipesWithinTime(maxTotalTime).map { prependBaseUrlToImageUrl(it) }
 
     private fun prependBaseUrlToImageUrl(recipe: Recipe): Recipe {
         val thumbnail = recipe.dynamicThumbnail?.let {

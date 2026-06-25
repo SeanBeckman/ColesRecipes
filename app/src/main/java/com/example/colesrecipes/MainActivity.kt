@@ -15,6 +15,11 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.colesrecipes.features.recipes.detail.RecipeDetailScreen
 import com.example.colesrecipes.features.recipes.list.RecipeListScreen
 import com.example.colesrecipes.ui.theme.ColesRecipesTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,6 +41,8 @@ class MainActivity : ComponentActivity() {
 @PreviewScreenSizes
 @Composable
 fun ColesRecipesApp() {
+    val navController = rememberNavController()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -48,6 +55,26 @@ fun ColesRecipesApp() {
             )
         }
     ) { padding ->
-        RecipeListScreen(modifier = Modifier.padding(padding))
+        NavHost(
+            navController = navController,
+            startDestination = "recipeList",
+            modifier = Modifier.padding(padding)
+        ) {
+            composable("recipeList") {
+                RecipeListScreen(
+                    onNavigateToDetail = { recipeTitle ->
+                        navController.navigate("recipeDetail/$recipeTitle")
+                    }
+                )
+            }
+            composable(
+                route = "recipeDetail/{recipeTitle}",
+                arguments = listOf(navArgument("recipeTitle") {
+                    type = androidx.navigation.NavType.StringType
+                })
+            ) {
+                RecipeDetailScreen()
+            }
+        }
     }
 }

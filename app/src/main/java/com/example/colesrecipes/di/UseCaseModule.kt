@@ -15,7 +15,7 @@ object UseCaseModule {
 
     @Provides
     @Singleton
-    fun provideRecipeSUseCase(repository: RecipeRepository): RecipesUseCase {
+    fun provideRecipesUseCase(repository: RecipeRepository): RecipesUseCase {
         return RecipesUseCase(repository)
     }
 

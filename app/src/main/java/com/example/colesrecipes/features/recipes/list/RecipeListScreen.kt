@@ -23,6 +23,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -42,14 +43,24 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.colesrecipes.R
 import com.example.colesrecipes.repository.Recipe
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun RecipeListScreen(
     modifier: Modifier = Modifier,
-    viewModel: RecipeListViewModel = hiltViewModel()
+    viewModel: RecipeListViewModel = hiltViewModel(),
+    onNavigateToDetail: (String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showFilterDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.navigationEvents.collectLatest { event ->
+            when (event) {
+                is RecipeListNavigationEvent.NavigateToDetail -> onNavigateToDetail(event.recipeTitle)
+            }
+        }
+    }
 
     val configuration = LocalConfiguration.current
     val columns = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 2 else 1
@@ -60,7 +71,11 @@ fun RecipeListScreen(
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
             is RecipeListUiState.Success -> {
-                RecipeGrid(recipes = state.recipes, columns = columns)
+                RecipeGrid(
+                    recipes = state.recipes,
+                    columns = columns,
+                    onRecipeClick = { viewModel.onRecipeClicked(it) }
+                )
             }
             is RecipeListUiState.Error -> {
                 Text(
@@ -135,21 +150,32 @@ fun FilterDialog(
 }
 
 @Composable
-fun RecipeGrid(recipes: List<Recipe>, columns: Int) {
+fun RecipeGrid(
+    recipes: List<Recipe>,
+    columns: Int,
+    onRecipeClick: (Recipe) -> Unit
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
         contentPadding = PaddingValues(16.dp),
         modifier = Modifier.fillMaxSize()
     ) {
         items(recipes) { recipe ->
-            RecipeItem(recipe = recipe)
+            RecipeItem(
+                recipe = recipe,
+                onClick = { onRecipeClick(recipe) }
+            )
         }
     }
 }
 
 @Composable
-fun RecipeItem(recipe: Recipe) {
+fun RecipeItem(
+    recipe: Recipe,
+    onClick: () -> Unit
+) {
     Card(
+        onClick = onClick,
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()

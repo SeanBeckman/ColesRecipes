@@ -3,7 +3,7 @@ package com.example.colesrecipes.features.recipes.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.colesrecipes.repository.Recipe
-import com.example.colesrecipes.usecase.RecipesUseCase
+import com.example.colesrecipes.usecase.RecipeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecipeListViewModel @Inject constructor(
-    private val recipesUseCase: RecipesUseCase
+    private val recipeUseCase: RecipeUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<RecipeListUiState>(RecipeListUiState.Loading)
@@ -33,7 +33,7 @@ class RecipeListViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = RecipeListUiState.Loading
             try {
-                val recipes = recipesUseCase.getRecipes()
+                val recipes = recipeUseCase.getRecipes()
                 _uiState.value = RecipeListUiState.Success(recipes)
             } catch (e: Exception) {
                 _uiState.value = RecipeListUiState.Error(e.message ?: "Unknown error")
@@ -45,7 +45,7 @@ class RecipeListViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = RecipeListUiState.Loading
             try {
-                val filteredRecipes = recipesUseCase.getRecipesWithinTime(maxTime)
+                val filteredRecipes = recipeUseCase.getRecipesWithinTime(maxTime)
                 _uiState.value = RecipeListUiState.Success(filteredRecipes)
             } catch (e: Exception) {
                 _uiState.value = RecipeListUiState.Error(e.message ?: "Unknown error")

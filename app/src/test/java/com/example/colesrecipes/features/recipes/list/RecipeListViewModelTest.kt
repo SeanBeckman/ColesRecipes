@@ -2,7 +2,7 @@ package com.example.colesrecipes.features.recipes.list
 
 import com.example.colesrecipes.repository.Recipe
 import com.example.colesrecipes.repository.RecipeDetails
-import com.example.colesrecipes.usecase.RecipesUseCase
+import com.example.colesrecipes.usecase.RecipeUseCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -24,7 +24,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class RecipeListViewModelTest {
 
     private lateinit var viewModel: RecipeListViewModel
-    private val recipesUseCase: RecipesUseCase = mockk(relaxed = true)
+    private val recipeUseCase: RecipeUseCase = mockk(relaxed = true)
     private val testDispatcher = UnconfinedTestDispatcher()
 
     @Before
@@ -37,11 +37,11 @@ class RecipeListViewModelTest {
         Dispatchers.resetMain()
     }
 
-    private fun createViewModel() = RecipeListViewModel(recipesUseCase)
+    private fun createViewModel() = RecipeListViewModel(recipeUseCase)
 
     @Test
     fun `initial state is Loading`() = runTest {
-        coEvery { recipesUseCase.getRecipes() } coAnswers {
+        coEvery { recipeUseCase.getRecipes() } coAnswers {
             delay(1000.milliseconds)
             emptyList()
         }
@@ -54,7 +54,7 @@ class RecipeListViewModelTest {
     @Test
     fun `loadRecipes updates uiState to Success when successful`() = runTest {
         val recipes = listOf(createRecipe("Recipe 1"))
-        coEvery { recipesUseCase.getRecipes() } returns recipes
+        coEvery { recipeUseCase.getRecipes() } returns recipes
 
         viewModel = createViewModel()
 
@@ -64,7 +64,7 @@ class RecipeListViewModelTest {
     @Test
     fun `loadRecipes updates uiState to Error when it fails`() = runTest {
         val errorMessage = "Network Error"
-        coEvery { recipesUseCase.getRecipes() } throws Exception(errorMessage)
+        coEvery { recipeUseCase.getRecipes() } throws Exception(errorMessage)
 
         viewModel = createViewModel()
 
@@ -74,7 +74,7 @@ class RecipeListViewModelTest {
     @Test
     fun `filterRecipesByTime updates uiState to Success with filtered recipes`() = runTest {
         val filteredRecipes = listOf(createRecipe("Quick Recipe"))
-        coEvery { recipesUseCase.getRecipesWithinTime(any()) } returns filteredRecipes
+        coEvery { recipeUseCase.getRecipesWithinTime(any()) } returns filteredRecipes
 
         viewModel = createViewModel()
         viewModel.filterRecipesByTime(30)
@@ -85,7 +85,7 @@ class RecipeListViewModelTest {
     @Test
     fun `filterRecipesByTime updates uiState to Error when it fails`() = runTest {
         val errorMessage = "Filter Error"
-        coEvery { recipesUseCase.getRecipesWithinTime(any()) } throws Exception(errorMessage)
+        coEvery { recipeUseCase.getRecipesWithinTime(any()) } throws Exception(errorMessage)
 
         viewModel = createViewModel()
         viewModel.filterRecipesByTime(30)

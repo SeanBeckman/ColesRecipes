@@ -1,9 +1,14 @@
 package com.example.colesrecipes.repository
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 
 data class RecipeResponse(
     val recipes: List<Recipe>
 )
+
+@Parcelize
 data class Recipe(
     val dynamicTitle: String,
     val dynamicDescription: String,
@@ -11,8 +16,9 @@ data class Recipe(
     val dynamicThumbnailAlt: String?,
     val recipeDetails: RecipeDetails,
     val ingredients: List<Ingredient>,
-)
+): Parcelable
 
+@Parcelize
 data class RecipeDetails(
     val amountLabel: String,
     val amountNumber: Int,
@@ -23,8 +29,9 @@ data class RecipeDetails(
     val cookingTime: String,
     val cookTimeAsMinutes: Int,
     val prepTimeAsMinutes: Int,
-)
+): Parcelable
 
+@Parcelize
 data class Ingredient(
     val ingredient: String,
-)
+): Parcelable

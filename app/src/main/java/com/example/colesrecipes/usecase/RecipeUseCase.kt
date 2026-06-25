@@ -8,7 +8,15 @@ class RecipeUseCase @Inject constructor(
     private val repository: RecipeRepository
 ) {
 
-    suspend fun getRecipes(): List<Recipe> = repository.getRecipes()
+    suspend fun getRecipes(): List<Recipe> = repository.getRecipes().map { prependBaseUrlToImageUrl(it) }
 
-    suspend fun getRecipesWithinTime(maxTotalTime: Int) = repository.getRecipesWithinTime(maxTotalTime)
+    suspend fun getRecipesWithinTime(maxTotalTime: Int) =
+        repository.getRecipesWithinTime(maxTotalTime).map { prependBaseUrlToImageUrl(it) }
+
+    private fun prependBaseUrlToImageUrl(recipe: Recipe): Recipe {
+        val thumbnail = recipe.dynamicThumbnail?.let {
+            "${RecipeRepository.COLES_BASE_URL}$it"
+        }
+        return recipe.copy(dynamicThumbnail = thumbnail)
+    }
 }

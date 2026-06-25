@@ -8,6 +8,10 @@ import javax.inject.Inject
 interface RecipeRepository {
     suspend fun getRecipes(): List<Recipe>
     suspend fun getRecipesWithinTime(maxTotalTime: Int): List<Recipe>
+
+    companion object {
+        const val COLES_BASE_URL = "https://coles.com.au"
+    }
 }
 
 class RecipeRepositoryImpl @Inject constructor(

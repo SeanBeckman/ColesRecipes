@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ColesRecipes</string>
+    <string name="filter_recipes">Filter Recipes</string>
+    <string name="filter_by_total_time">Filter by Total Time</string>
+    <string name="max_total_time">Max total time: %1$d minutes</string>
+    <string name="apply">Apply</string>
+    <string name="reset">Reset</string>
 </resources>

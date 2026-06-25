@@ -11,23 +11,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.colesrecipes.R
 import com.example.colesrecipes.repository.Recipe
 
 @Composable
@@ -36,6 +49,7 @@ fun RecipeListScreen(
     viewModel: RecipeListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showFilterDialog by remember { mutableStateOf(false) }
 
     val configuration = LocalConfiguration.current
     val columns = if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) 2 else 1
@@ -56,7 +70,68 @@ fun RecipeListScreen(
                 )
             }
         }
+
+        FloatingActionButton(
+            onClick = { showFilterDialog = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp),
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        ) {
+            Icon(Icons.Default.FilterList, contentDescription = stringResource(R.string.filter_recipes))
+        }
+
+        if (showFilterDialog) {
+            FilterDialog(
+                onDismiss = { showFilterDialog = false },
+                onFilter = { maxTime ->
+                    viewModel.filterRecipesByTime(maxTime)
+                    showFilterDialog = false
+                },
+                onReset = {
+                    viewModel.loadRecipes()
+                    showFilterDialog = false
+                }
+            )
+        }
     }
+}
+
+@Composable
+fun FilterDialog(
+    onDismiss: () -> Unit,
+    onFilter: (Int) -> Unit,
+    onReset: () -> Unit
+) {
+    var sliderPosition by remember { mutableFloatStateOf(60f) }
+    val roundedTime = (sliderPosition / 10).toInt() * 10
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(stringResource(R.string.filter_by_total_time)) },
+        text = {
+            Column {
+                Text(text = stringResource(R.string.max_total_time, roundedTime))
+                Slider(
+                    value = sliderPosition,
+                    onValueChange = { sliderPosition = it },
+                    valueRange = 10f..180f,
+                    steps = 16
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onFilter(roundedTime) }) {
+                Text(stringResource(R.string.apply))
+            }
+        },
+        dismissButton = {
+            Button(onClick = onReset) {
+                Text(stringResource(R.string.reset))
+            }
+        }
+    )
 }
 
 @Composable

@@ -23,7 +23,7 @@ class RecipeUseCase @Inject constructor(
 
     private fun prependBaseUrlToImageUrl(recipe: Recipe): Recipe {
         val thumbnail = recipe.dynamicThumbnail?.let {
-            if (it.startsWith("http")) it else "${RecipeRepository.COLES_BASE_URL}$it"
+            "${RecipeRepository.COLES_BASE_URL}$it"
         }
         return recipe.copy(dynamicThumbnail = thumbnail)
     }

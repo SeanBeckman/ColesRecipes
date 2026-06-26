@@ -18,6 +18,9 @@ class RecipeDetailViewModel @Inject constructor(
     private val recipeUseCase: RecipeUseCase
 ) : ViewModel() {
 
+    private val _uiState = MutableStateFlow<RecipeDetailUiState>(RecipeDetailUiState.Loading)
+    val uiState: StateFlow<RecipeDetailUiState> = _uiState.asStateFlow()
+
     init {
         viewModelScope.launch {
             val recipeTitle: String = checkNotNull(savedStateHandle["recipeTitle"])
@@ -29,8 +32,6 @@ class RecipeDetailViewModel @Inject constructor(
             }
         }
     }
-    private val _uiState = MutableStateFlow<RecipeDetailUiState>(RecipeDetailUiState.Loading)
-    val uiState: StateFlow<RecipeDetailUiState> = _uiState.asStateFlow()
 }
 
 

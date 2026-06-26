@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -157,5 +158,35 @@ fun DetailItem(label: String, value: String) {
     ) {
         Text(text = label, style = MaterialTheme.typography.labelSmall)
         Text(text = value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecipeDetailContentPreview() {
+    MaterialTheme {
+        RecipeDetailContent(
+            recipe = Recipe(
+                dynamicTitle = "Test Recipe",
+                dynamicDescription = "This is a test description for the recipe detail preview.",
+                dynamicThumbnail = null,
+                dynamicThumbnailAlt = null,
+                recipeDetails = com.example.colesrecipes.repository.RecipeDetails(
+                    amountLabel = "Serves",
+                    amountNumber = 4,
+                    prepLabel = "Prep",
+                    prepTime = "10m",
+                    prepNote = null,
+                    cookingLabel = "Cooking",
+                    cookingTime = "20m",
+                    cookTimeAsMinutes = 20,
+                    prepTimeAsMinutes = 10
+                ),
+                ingredients = listOf(
+                    com.example.colesrecipes.repository.Ingredient("Ingredient 1"),
+                    com.example.colesrecipes.repository.Ingredient("Ingredient 2")
+                )
+            )
+        )
     }
 }

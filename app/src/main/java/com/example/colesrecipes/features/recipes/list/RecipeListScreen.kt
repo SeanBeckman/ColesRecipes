@@ -36,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -217,5 +218,33 @@ fun RecipeItem(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecipeItemPreview() {
+    MaterialTheme {
+        RecipeItem(
+            recipe = Recipe(
+                dynamicTitle = "Test Recipe",
+                dynamicDescription = "This is a test description for the recipe preview.",
+                dynamicThumbnail = null,
+                dynamicThumbnailAlt = null,
+                recipeDetails = com.example.colesrecipes.repository.RecipeDetails(
+                    amountLabel = "Serves",
+                    amountNumber = 4,
+                    prepLabel = "Prep",
+                    prepTime = "10m",
+                    prepNote = null,
+                    cookingLabel = "Cooking",
+                    cookingTime = "20m",
+                    cookTimeAsMinutes = 20,
+                    prepTimeAsMinutes = 10
+                ),
+                ingredients = emptyList()
+            ),
+            onClick = {}
+        )
     }
 }

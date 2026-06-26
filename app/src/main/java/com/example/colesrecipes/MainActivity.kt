@@ -17,11 +17,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.colesrecipes.features.recipes.detail.RecipeDetailScreen
@@ -47,13 +49,21 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ColesRecipesApp() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.app_name))
+                    val title = when {
+                        currentRoute?.startsWith("recipeDetail") == true -> {
+                            navBackStackEntry?.arguments?.getString("recipeTitle") ?: stringResource(R.string.app_name)
+                        }
+                        else -> stringResource(R.string.app_name)
+                    }
+                    Text(title)
                 },
                 navigationIcon = {
                     if (navController.previousBackStackEntry != null) {

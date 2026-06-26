@@ -6,14 +6,15 @@ An Android application built with modern architecture to showcase a list of reci
 
 ### 1. Project Infrastructure & Dependencies
 *   **Dependency Injection**: Integrated **Hilt** for robust dependency management.
-*   **GSON**: Use **GSON** for initial data deserialization though in reality this would be a network request
+*   **GSON**: Use **GSON** for initial data deserialization though in reality this would be a network request.
 *   **Navigation**: Set up **Compose Navigation** with a reactive TopAppBar that handles titles and back navigation dynamically.
 *   **Image Loading**: Integrated **Coil 3** for efficient, asynchronous image loading.
 *   **Testing Suite**: Configured **MockK**, **Truth**, and **Robolectric**.
+*   **Snapshot Testing**: Integrated **Roborazzi** for automated UI screenshot testing of Compose components.
 
 ### 2. Data Layer & Optimization
 *   **Domain Models**: Defined clean data structures for `Recipe`, `Ingredient`, and `RecipeDetails`.
-*   **Local Persistence (Room)**: Implemented a *sDatabase** with a cache-first strategy.
+*   **Local Persistence (Room)**: Implemented a **Room Database** with a cache-first strategy.
 *   **SQL Optimization**: Filtering logic is performed at the database level using a calculated total time column:
     `SELECT * FROM recipes WHERE (cookTimeAsMinutes + prepTimeAsMinutes) <= :maxTime`
 *   **URL Normalization**: Implemented logic in the Use Case to prepend base URLs to relative image paths provided in the source JSON.
@@ -27,11 +28,28 @@ An Android application built with modern architecture to showcase a list of reci
 
 ### 5. UI, Branding & Accessibility
 *   **Theming**: Custom-themed using **Coles Brand Colors** (Coles Red `#E01A22`).
+*   **Snapshot UI Tests**: Automated screenshot tests capture and verify the visual state of core UI components (`RecipeItem` and `RecipeDetailContent`) to prevent visual regressions.
 *   **TalkBack Optimization**: 
     *   Merged card descendants in the list to provide concise recipe summaries.
     *   Grouped related details (Servings, Prep, Cook) in the detail view with semantic descriptions.
     *   Explicitly labeled ingredients for screen readers.
 *   **Localization**: Extracted hardcoded UI strings into `strings.xml`.
+
+---
+
+## Quality Assurance & Testing
+
+### Snapshot Testing (Roborazzi)
+The app uses **Roborazzi** in conjunction with **Robolectric** to perform headless UI testing.
+*   **Location**: Baseline screenshots are stored in `app/src/test/screenshots/`.
+*   **Run Verification**: `./gradlew test` (verifies current UI against baselines).
+*   **Record/Update Snapshots**: `./gradlew recordRoborazziDebug` (generates new baseline images).
+
+---
+
+## AI Usage
+* I mainly used the built in agent in Android Studio for small tasks which typically eat up lots of time during coding challenges such as these, for instances importing libraries and setting up small parts of boiler plate such as with DI and the Repository
+* I found the AI particularly bad when it came to resolving dependency conflicts especially in regards to codegen. At one stage I thought I needed @Parcelize so I brought that in and had non stop issues with KSP. I attemped to manually fix things but was wasting time and got the agent involved whom seemed to go in circles adjusting version numbers and wasting even more time. However, I realised I no longer needed the library and resolved the issues myself.
 
 ---
 
@@ -51,8 +69,8 @@ An Android application built with modern architecture to showcase a list of reci
 
 1. **Bug fix**: AsyncImage is not loading the network images, I am not sure if this was an issue with the emulator or something I had not done right with the library but decided it was not worth the time to fix.
 2. **UI Improvements**: Collapsible top app bar with title rather than having the title in the page content.
-2. **UI Improvements**: FAB Shows the currently filtered time (EG 40 mins) currently the user has no idea how the filter is set after it is done
-3. **Architecture**: Gradle modules for feature and core functionality. Currently everything is in one App module. This helps logically split up the layers and prevent cross contamination and anti patterns developing with larger teams/projects
+3. **UI Improvements**: FAB Shows the currently filtered time (EG 40 mins) currently the user has no idea how the filter is set after it is done.
+4. **Architecture**: Gradle modules for feature and core functionality. Currently everything is in one App module. This helps logically split up the layers and prevent cross contamination and anti patterns developing with larger teams/projects.
 
 ## AI Suggestions
 1. **Image Caching Policies**: Implement custom `Cache-Control` headers or a custom OkHttp client for Coil to handle offline image viewing more effectively.

@@ -24,6 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +34,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.example.colesrecipes.R
 import com.example.colesrecipes.repository.Recipe
 
 @Composable
@@ -72,7 +76,8 @@ fun RecipeDetailContent(recipe: Recipe) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(16.dp)
+                .semantics(mergeDescendants = true) {},
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -122,16 +127,21 @@ fun RecipeDetailContent(recipe: Recipe) {
 
             if (recipe.ingredients.isNotEmpty()) {
                 Text(
-                    text = "Ingredients",
+                    text = stringResource(R.string.ingredients),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
                 recipe.ingredients.forEach { ingredient ->
+                    val ingredientDescription = stringResource(R.string.ingredient_prefix, ingredient.ingredient)
                     Text(
                         text = "> ${ingredient.ingredient}",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(vertical = 2.dp)
+                        modifier = Modifier
+                            .padding(vertical = 2.dp)
+                            .semantics {
+                                contentDescription = ingredientDescription
+                            }
                     )
                 }
             }
@@ -141,7 +151,10 @@ fun RecipeDetailContent(recipe: Recipe) {
 
 @Composable
 fun DetailItem(label: String, value: String) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.semantics(mergeDescendants = true) {}
+    ) {
         Text(text = label, style = MaterialTheme.typography.labelSmall)
         Text(text = value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
     }

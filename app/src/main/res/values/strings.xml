@@ -5,4 +5,8 @@
     <string name="max_total_time">Max total time: %1$d minutes</string>
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="ingredient_prefix">Ingredient: %1$s</string>
+    <string name="recipe_not_found">Recipe not found</string>
+    <string name="back">Back</string>
 </resources>

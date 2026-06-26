@@ -94,9 +94,10 @@ class RecipeUseCaseTest {
         val result = recipeUseCase.getRecipesWithinTime(40)
 
         // Then
-        assertThat(result).hasSize(2)
+        assertThat(result).hasSize(3)
         assertThat(result[0].dynamicThumbnail).isEqualTo("${RecipeRepository.COLES_BASE_URL}/fast.jpg")
         assertThat(result[1].dynamicThumbnail).isEqualTo("${RecipeRepository.COLES_BASE_URL}/medium.jpg")
+        assertThat(result[2].dynamicThumbnail).isEqualTo("${RecipeRepository.COLES_BASE_URL}/large.jpg")
     }
 
     @Test

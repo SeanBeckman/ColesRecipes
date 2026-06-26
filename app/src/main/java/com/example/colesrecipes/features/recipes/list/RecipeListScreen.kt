@@ -36,6 +36,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -180,6 +184,10 @@ fun RecipeItem(
         modifier = Modifier
             .padding(8.dp)
             .fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+                role = Role.Button
+                contentDescription = "${recipe.dynamicTitle}. ${recipe.dynamicDescription}"
+            }
     ) {
         Column {
             AsyncImage(
@@ -187,7 +195,7 @@ fun RecipeItem(
                     .data(recipe.dynamicThumbnail)
                     .crossfade(true)
                     .build(),
-                contentDescription = recipe.dynamicThumbnailAlt,
+                contentDescription = null, // Set to null as it's merged into Card's description
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f),
